@@ -46,7 +46,7 @@ SQL语句为最优的。
 四、将最优的SQL语句（查询2）通过sqldeveloper的优化指导工具进行优化指导，结果如下图4.1所示  
 --------
 
-![image](https://github.com/201610414314/Oracle/blob/master/test1/8.jpg)  
+![image](https://github.com/201610414314/Oracle/blob/master/test1/8.png)  
    ###### 图4.1  
                     
   通过上图可以看出经过Sqldeveloper优化工具后，发现已经是最佳优化了。
