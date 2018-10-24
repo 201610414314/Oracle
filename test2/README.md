@@ -80,7 +80,7 @@ WANG
 
 SQL> exit
 
-总结分析:这是登录的hr，如果在上面将权限赋给其他用户，将可以使用其他用户登录，并查询new_lyk插入的值。
+总结分析:这是登录的hr用户，如果在上面将权限赋给其他用户，将可以使用其他用户登录，并查询new_lyk插入的值。
 
 四、查看数据库的使用情况
 --------
@@ -104,7 +104,7 @@ USERS
          5 32767.9844 YES
 
 
- from (SELECT tablespace_name,Sum(bytes)free
+SELECT from (SELECT tablespace_name,Sum(bytes)free
 SELECT a.tablespace_name "表空间名",Total/1024/1024 "大小MB",
  free/1024/1024 "剩余MB",( total - free )/1024/1024 "使用MB",
  Round(( total - free )/ total,4)* 100 "使用率%"
@@ -136,13 +136,16 @@ EXAMPLE
   1281.875      62.25   1219.625      95.14  
   
   
-总结分析:autoextensible是显示表空间中的数据文件是否自动增加;MAX_MB是指数据文件的最大容量。  
+总结分析:
+- autoextensible是显示表空间中的数据文件是否自动增加。  
+- MAX_MB是指数据文件的最大容量。  
 
 五、总结分析
 --------
-数据库pdborcl中包含了每个人创建的的角色和用户。 所有人的用户都使用表空间users存储表的数据。  
-表空间中存储了很多相同名称的表mytable和视图myview，但分别属性于不同的用户，不会引起混淆。  
-随着用户往表中插入数据，表空间的磁盘使用量会增加。
+- 数据库pdborcl中包含了每个人创建的的角色和用户。  
+- 所有人的用户都使用表空间users存储表的数据。  
+- 表空间中存储了很多相同名称的表mytable和视图myview，但分别属性于不同的用户，不会引起混淆。  
+- 随着用户往表中插入数据，表空间的磁盘使用量会增加。
 
 
 
