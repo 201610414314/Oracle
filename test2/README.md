@@ -23,6 +23,8 @@ SQL> GRANT con_lyk_view TO new_lyk;
 授权成功。  
 SQL> exit    
 
+总结:语句“ALTER USER new_lyk QUOTA 50M ON users;”是指授权new_lyk用户访问users表空间，空间限额是50M。
+
 二、第2步：新用户new_lyk连接到pdborcl，创建表mytable和视图myview，插入数据，最后将myview的SELECT对象权限授予hr用户，语句与结果如下： 
 ---------
 
@@ -51,6 +53,8 @@ SQL> GRANT SELECT ON myview TO hr;
 授权成功。  
 SQL> exit    
 
+总结分析:创建一个名为mytable的表，并向表中插入相关值，并将查询权限赋给hr,这样hr就可以查询表中的值了。
+
 三、第3步：用户hr连接到pdborcl，查询new_lyk授予它的视图myview  
 ---------
 [oracle@deep02 ~]$ sqlplus hr/123@pdborcl
@@ -67,8 +71,8 @@ With the Partitioning, OLAP, Advanced Analytics and Real Application Testing opt
 
 SQL> SELECT * FROM new_user.myview;
 
-NAME
---------------------------------------------------------------------------------
+NAME  
+
 zhang
 wang
 zhang
@@ -76,6 +80,7 @@ WANG
 
 SQL> exit
 
+总结分析:这是登录的hr，如果在上面将权限赋给其他用户，将可以使用其他用户登录，并查询new_lyk插入的值。
 
 四、查看数据库的使用情况
 --------
@@ -128,7 +133,16 @@ SYSTEM
     大小MB     剩余MB     使用MB    使用率%
 ---------- ---------- ---------- ----------
 EXAMPLE
-  1281.875      62.25   1219.625      95.14
+  1281.875      62.25   1219.625      95.14  
+  
+  
+总结分析:autoextensible是显示表空间中的数据文件是否自动增加;MAX_MB是指数据文件的最大容量。  
+
+五、总结分析
+--------
+数据库pdborcl中包含了每个人创建的的角色和用户。 所有人的用户都使用表空间users存储表的数据。  
+表空间中存储了很多相同名称的表mytable和视图myview，但分别属性于不同的用户，不会引起混淆。  
+随着用户往表中插入数据，表空间的磁盘使用量会增加。
 
 
 
