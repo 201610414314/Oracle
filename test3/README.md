@@ -4,7 +4,7 @@
 一、第1步：在主表orders和从表order_details之间建立引用分区 在new_lyk用户中创建两个表：orders（订单表）和order_details（订单详表），  
 两个表通过列order_id建立主外键关联。orders表按范围分区进行存储，order_details使用引用分区进行存储：
 -------
-- 首先登录自己的账号new_lyk：  
+##### 首先登录自己的账号new_lyk：  
 [oracle@deep02 ~]$ sqlplus new_lyk/123@pdborcl  
 SQL*Plus: Release 12.1.0.2.0 Production on 星期三 10月 31 08:51:15 2018  
 Copyright (c) 1982, 2014, Oracle.  All rights reserved.  
@@ -16,7 +16,7 @@ With the Partitioning, OLAP, Advanced Analytics and Real Application Testing opt
 
 SQL>    
 
-- 其次，进行orders表的创建，语句及结果如下：  
+##### 其次，进行orders表的创建，语句及结果如下：  
 CREATE TABLE orders (
   2   order_id NUMBER(10, 0) NOT NULL
  , customer_name VARCHAR2(40 BYTE) NOT NULL
@@ -100,7 +100,7 @@ PCTFREE 10
 
 表已创建。
 
-- 进行order_details表的创建,并通过order_id进行主外键关联，语句及结果如下:
+##### 然后，进行order_details表的创建,并通过order_id进行主外键关联，语句及结果如下:  
 CREATE TABLE order_details 
 (
 id NUMBER(10, 0) NOT NULL 
