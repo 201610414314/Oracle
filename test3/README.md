@@ -165,7 +165,8 @@ Table ORDER_DETAILS 已创建。
 
 二、第2步：给用户进行分配可查询的权限，如下图所示： 
 ---------
-
+![image](https://github.com/201610414314/Oracle/blob/master/test3/1.jpg)  
+   ###### 图2.1  
 
 三、第3步：插入一万条数据语句及联合查询语句：  
 --------
