@@ -471,7 +471,7 @@
 
 二、第2步：插相关数据数据。 
 ---------
-##### 录入数据
+##### （1）录入数据语句及其相关语句。
     注：要求至少有1万个订单，每个订单至少有4个详单。至少有两个部门，每个部门至少有1个员工，其中只有一个人没有领导，一个领导至少有一个下属，并且它的下属是另一个人的领导（比如A领导B，B领导C）。
     --------------------------------------------------------
     --  DDL for View VIEW_ORDER_DETAILS
@@ -591,7 +591,7 @@
     MODIFY PARTITION PARTITION_BEFORE_2018
     NOCOMPRESS;
     
-##### 序列的应用。
+##### （2）序列的应用语句及其相关语句。
     注：插入ORDERS和ORDER_DETAILS 两个表的数据时，主键ORDERS.ORDER_ID, ORDER_DETAILS.ID的值必须通过序列SEQ_ORDER_ID和SEQ_ORDER_ID取得，不能手工输入一个数字。
     --------------------------------------------------------
     --  DDL for Sequence SEQ_ORDER_ID
@@ -603,7 +603,7 @@
     CREATE SEQUENCE  "SEQ_ORDER_DETAILS_ID"  MINVALUE 1 MAXVALUE 9999999999 INCREMENT BY 1 START WITH 1 CACHE 2000 ORDER  NOCYCLE           NOPARTITION ;
 
     
-##### 触发器的应用语句及其相关语句。
+##### （3）触发器的应用语句及其相关语句。
     注：维护ORDER_DETAILS的数据时（insert,delete,update）要同步更新ORDERS表订单应收货款ORDERS.Trade_Receivable的值。
     
     --创建3个触发器
@@ -683,7 +683,7 @@
     ALTER TRIGGER "ORDER_DETAILS_SNTNS_TRIG" DISABLE;
 
     
-##### 查询数据。
+##### （4）查询数据语句。
 
 ###### 1.查询某个员工的信息
 ###### 2.递归查询某个员工及其所有下属，子下属员工。
