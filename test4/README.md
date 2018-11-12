@@ -9,17 +9,17 @@
     TEMPORARY TABLESPACE "TEMP";
     
     -- QUOTAS
-    ALTER USER STUDY QUOTA UNLIMITED ON USERS;
-    ALTER USER STUDY QUOTA UNLIMITED ON USERS02;
-    ALTER USER STUDY ACCOUNT UNLOCK;
+    ALTER USER NEW_LYK_FOUR QUOTA UNLIMITED ON USERS;
+    ALTER USER NEW_LYK_FOUR QUOTA UNLIMITED ON USERS02;
+    ALTER USER NEW_LYK_FOUR ACCOUNT UNLOCK;
     
     -- ROLES
-    GRANT "CONNECT" TO STUDY WITH ADMIN OPTION;
-    GRANT "RESOURCE" TO STUDY WITH ADMIN OPTION;
-    ALTER USER STUDY DEFAULT ROLE "CONNECT","RESOURCE";
+    GRANT "CONNECT" TO NEW_LYK_FOUR WITH ADMIN OPTION;
+    GRANT "RESOURCE" TO NEW_LYK_FOUR WITH ADMIN OPTION;
+    ALTER USER NEW_LYK_FOUR DEFAULT ROLE "CONNECT","RESOURCE";
     
     -- SYSTEM PRIVILEGES
-    GRANT CREATE VIEW TO STUDY WITH ADMIN OPTION;
+    GRANT CREATE VIEW TO NEW_LYK_FOUR WITH ADMIN OPTION;
 
 ##### （1）创建部门表语句及其相关语句（DEPARTMENTS 表空间：USERS）。
     CREATE TABLE DEPARTMENTS
@@ -685,14 +685,27 @@
     
 ##### （4）查询数据语句。
 
-###### 1.查询某个员工的信息
-###### 2.递归查询某个员工及其所有下属，子下属员工。
-###### 3.查询订单表，并且包括订单的订单应收货款: Trade_Receivable= sum(订单详单表.ProductNum*订单详单表.ProductPrice)- Discount。
-###### 4.查询订单详表，要求显示订单的客户名称和客户电话，产品类型用汉字描述。
-###### 5.查询出所有空订单，即没有订单详单的订单。
-###### 6.查询部门表，同时显示部门的负责人姓名。
-###### 7.查询部门表，统计每个部门的销售总金额。
+###### 1.查询某个员工的信息sql语句。
+     SELECT * FROM EMPLOYEE WHERE employee_ID = 11;
+###### 2.递归查询某个员工及其所有下属，子下属员工SQL语句。
+     WITH A (EMPLOYEE_ID,NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,SALARY,MANAGER_ID,DEPARTMENT_ID) AS
+     (SELECT EMPLOYEE_ID,NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,SALARY,MANAGER_ID,DEPARTMENT_ID
+     FROM employees WHERE employee_ID = 11
+     UNION ALL
+     SELECT B.EMPLOYEE_ID,B.NAME,B.EMAIL,B.PHONE_NUMBER,B.HIRE_DATE,B.SALARY,B.MANAGER_ID,B.DEPARTMENT_ID
+     FROM A, employees B WHERE A.EMPLOYEE_ID = B.MANAGER_ID)
+     SELECT * FROM A;
+     
+###### 3.查询订单表SQL语句，并且包括订单的订单应收货款: Trade_Receivable= sum(订单详单表.ProductNum*订单详单表.ProductPrice)- Discount。
+###### 4.查询订单详表SQL语句，要求显示订单的客户名称和客户电话，产品类型用汉字描述。
+###### 5.查询出所有空订单SQL语句，即没有订单详单的订单。
+###### 6.查询部门表SQL语句，同时显示部门的负责人姓名。
+###### 7.查询部门表SQL语句，统计每个部门的销售总金额。
     
 
 三、实验总结分析
 --------
+- 本次实验学会了如何应用序列以及触发器。
+- 加深了对于分区表的理解。
+- 对视图有了一定的了解。
+- 这次实验难度颇大，SQL语句很多，但是做完实验后，以前有些不懂的地方也都能懂了，这次实验的收获还是蛮大的。
