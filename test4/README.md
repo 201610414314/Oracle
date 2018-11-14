@@ -765,9 +765,10 @@
     
 ##### （4）查询数据语句。
 
-###### 1.查询某个员工的信息sql语句。
+###### 1.查询某个员工的信息sql语句及其结果如下图2-4-1所示。
      SELECT * FROM EMPLOYEES WHERE employee_ID = 11;
-    ![image](https://github.com/201610414314/Oracle/blob/master/test4/1.png)  
+   ![image](https://github.com/201610414314/Oracle/blob/master/test4/1.png)  
+                             <center><font size=1> 图2-4-1 </font></center>
 ###### 2.递归查询某个员工及其所有下属，子下属员工SQL语句。
      WITH A (EMPLOYEE_ID,NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,SALARY,MANAGER_ID,DEPARTMENT_ID) AS
      (SELECT EMPLOYEE_ID,NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,SALARY,MANAGER_ID,DEPARTMENT_ID
