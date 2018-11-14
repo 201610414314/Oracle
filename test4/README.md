@@ -3,10 +3,7 @@
                             ———— 2018年11月12日 16软3刘宇坤/201610414314  
 一、第1步：在new_lyk用户中创建员工表、部门表、订单表、订单详单表、产品表。
 -------
-##### （0）创建new_lyk用户，并为其分配相关权限。
-    CREATE USER NEW_LYK IDENTIFIED BY 123
-    DEFAULT TABLESPACE "USERS"
-    TEMPORARY TABLESPACE "TEMP";
+##### （0）为new_lyk用户分配相关权限。
     
     -- QUOTAS
     ALTER USER NEW_LYK QUOTA UNLIMITED ON USERS;
@@ -21,7 +18,7 @@
     -- SYSTEM PRIVILEGES
     GRANT CREATE VIEW TO NEW_LYK WITH ADMIN OPTION;
 
-##### （1）创建部门表语句及其相关语句（DEPARTMENTS 表空间：USERS）。
+##### （1）登录new_lyk用户，创建部门表语句及其相关语句（DEPARTMENTS 表空间：USERS）。
     CREATE TABLE DEPARTMENTS
     (
       DEPARTMENT_ID NUMBER(6, 0) NOT NULL
@@ -65,7 +62,7 @@
     
     Table DEPARTMENTS 已创建。
 
-##### （2）创建员工表语句及其相关sql语句（EMPLOYEES 表空间：USERS）。
+##### （2）登录new_lyk用户，创建员工表语句及其相关sql语句（EMPLOYEES 表空间：USERS）。
     CREATE TABLE EMPLOYEES
     (
     EMPLOYEE_ID NUMBER(6, 0) NOT NULL
@@ -205,7 +202,7 @@
     
     Table EMPLOYEES已变更。
 
-##### （3）创建订单表语句及其相关sql语句（ORDERS 分区表：USERS,USERS02）。
+##### （3）登录new_lyk用户，创建订单表语句及其相关sql语句（ORDERS 分区表：USERS,USERS02）。
     --  DDL for Table ORDER_ID_TEMP
     CREATE GLOBAL TEMPORARY TABLE "ORDER_ID_TEMP"
     (	"ORDER_ID" NUMBER(10,0) NOT NULL ENABLE,
@@ -374,7 +371,7 @@
     
     Table ORDERS已变更。
     
-##### （4）创建产品表语句及其相关sql语句（PRODUCTS 表空间：USERS）。
+##### （4）登录new_lyk用户，创建产品表语句及其相关sql语句（PRODUCTS 表空间：USERS）。
     CREATE TABLE PRODUCTS
     (
     PRODUCT_NAME VARCHAR2(40 BYTE) NOT NULL
@@ -407,7 +404,7 @@
     
     Table PRODUCTS已变更。
 
-##### （5）创建订单详表语句及其相关sql语句（ORDER_DETAILS 分区表：USERS,USERS02）。
+##### （5）登录new_lyk用户，创建订单详表语句及其相关sql语句（ORDER_DETAILS 分区表：USERS,USERS02）。
     CREATE TABLE ORDER_DETAILS
     (
     ID NUMBER(10, 0) NOT NULL
@@ -599,7 +596,7 @@
     v_tel := '139888883' || i;
     insert /*+append*/ into ORDERS (ORDER_ID,CUSTOMER_NAME,CUSTOMER_TEL,ORDER_DATE,EMPLOYEE_ID,DISCOUNT)
       values (v_order_id,v_name,v_tel,dt,V_EMPLOYEE_ID,dbms_random.value(100,0));
-    --插入订单y一个订单包括3个产品
+    --插入订单y一个订单包括4个产品
     v:=dbms_random.value(10000,4000);
     v_name:='computer'|| (i mod 3 + 1);
     insert /*+append*/ into ORDER_DETAILS(ID,ORDER_ID,PRODUCT_NAME,PRODUCT_NUM,PRODUCT_PRICE)
@@ -612,6 +609,10 @@
     v_name:='phone'|| (i mod 3 + 1);
     insert /*+append*/ into ORDER_DETAILS(ID,ORDER_ID,PRODUCT_NAME,PRODUCT_NUM,PRODUCT_PRICE)
       values (SEQ_ORDER_DETAILS_ID.NEXTVAL,v_order_id,v_name,1,v);
+    v:=dbms_random.value(8000,3000);
+    v_name:= (i mod 3 + 1);
+    insert /*+append*/ into ORDER_DETAILS(ID,ORDER_ID,PRODUCT_NAME,PRODUCT_NUM,PRODUCT_PRICE)
+      values (SEQ_ORDER_DETAILS_ID.NEXTVAL,v_order_id,v_name,4,v);
     --在触发器关闭的情况下，需要手工计算每个订单的应收金额：
     select sum(PRODUCT_NUM*PRODUCT_PRICE) into m from ORDER_DETAILS where ORDER_ID=v_order_id;
     if m is null then
@@ -630,26 +631,26 @@
      PL/SQL 过程已成功完成
 
     ALTER TRIGGER "ORDERS_TRIG_ROW_LEVEL" ENABLE;
-    Trigger "ORDERS_TRIG_ROW_LEVEL"已变更。
+    --Trigger "ORDERS_TRIG_ROW_LEVEL"已变更。
     
      ALTER TRIGGER "ORDER_DETAILS_SNTNS_TRIG" ENABLE;
-     Trigger "ORDER_DETAILS_SNTNS_TRIG"已变更。
+     --Trigger "ORDER_DETAILS_SNTNS_TRIG"已变更。
      
      ALTER TRIGGER "ORDER_DETAILS_ROW_TRIG" ENABLE;
-     Trigger "ORDER_DETAILS_ROW_TRIG"已变更。
+     --Trigger "ORDER_DETAILS_ROW_TRIG"已变更。
 
     --最后动态增加一个PARTITION_BEFORE_2018分区：
     ALTER TABLE ORDERS
     ADD PARTITION PARTITION_BEFORE_2018 VALUES LESS THAN (TO_DATE(' 2018-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'));
     
-    Table ORDERS已变更
+    --Table ORDERS已变更
     
 
     ALTER INDEX ORDERS_INDEX_DATE
     MODIFY PARTITION PARTITION_BEFORE_2018
     NOCOMPRESS;
     
-    Index ORDERS_INDEX_DATE已变更。
+    --Index ORDERS_INDEX_DATE已变更。
     
 ##### （2）序列的应用语句及其相关语句。
     注：插入ORDERS和ORDER_DETAILS 两个表的数据时，主键ORDERS.ORDER_ID, ORDER_DETAILS.ID的值必须通过序列SEQ_ORDER_ID和SEQ_ORDER_ID取得，不能手工输入一个数字。
@@ -662,10 +663,10 @@
     --------------------------------------------------------
     CREATE SEQUENCE  "SEQ_ORDER_DETAILS_ID"  MINVALUE 1 MAXVALUE 9999999999 INCREMENT BY 1 START WITH 1 CACHE 2000 ORDER  NOCYCLE           NOPARTITION ;
     
-    Sequence "SEQ_ORDER_ID" 已创建。
+    --Sequence "SEQ_ORDER_ID" 已创建。
 
 
-    Sequence "SEQ_ORDER_DETAILS_ID" 已创建。
+    --Sequence "SEQ_ORDER_DETAILS_ID" 已创建。
 
     
 ##### （3）触发器的应用语句及其相关语句。
@@ -768,7 +769,7 @@
 ###### 1.查询某个员工的信息sql语句及其结果如下图2-4-1所示。
      SELECT * FROM EMPLOYEES WHERE employee_ID = 11;
    ![image](https://github.com/201610414314/Oracle/blob/master/test4/1.png)  
-                             <center><font size=1> 图2-4-1 </font></center>
+ ###### 图2-4-1
 ###### 2.递归查询某个员工及其所有下属，子下属员工SQL语句。
      WITH A (EMPLOYEE_ID,NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,SALARY,MANAGER_ID,DEPARTMENT_ID) AS
      (SELECT EMPLOYEE_ID,NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,SALARY,MANAGER_ID,DEPARTMENT_ID
@@ -777,12 +778,6 @@
      SELECT B.EMPLOYEE_ID,B.NAME,B.EMAIL,B.PHONE_NUMBER,B.HIRE_DATE,B.SALARY,B.MANAGER_ID,B.DEPARTMENT_ID
      FROM A, employees B WHERE A.EMPLOYEE_ID = B.MANAGER_ID)
      SELECT * FROM A;
-     
-###### 3.查询订单表SQL语句，并且包括订单的订单应收货款: Trade_Receivable= sum(订单详单表.ProductNum*订单详单表.ProductPrice)- Discount。
-###### 4.查询订单详表SQL语句，要求显示订单的客户名称和客户电话，产品类型用汉字描述。
-###### 5.查询出所有空订单SQL语句，即没有订单详单的订单。
-###### 6.查询部门表SQL语句，同时显示部门的负责人姓名。
-###### 7.查询部门表SQL语句，统计每个部门的销售总金额。
     
 
 三、实验总结分析
