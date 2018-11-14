@@ -1,25 +1,25 @@
 **Oracle实验四：对象管理**  
 ========
                             ———— 2018年11月12日 16软3刘宇坤/201610414314  
-一、第1步：在new_lyk_four用户中创建员工表、部门表、订单表、订单详单表、产品表。
+一、第1步：在new_lyk用户中创建员工表、部门表、订单表、订单详单表、产品表。
 -------
-##### （0）创建new_lyk_four用户，并为其分配相关权限。
-    CREATE USER NEW_LYK_FOUR IDENTIFIED BY 123
+##### （0）创建new_lyk用户，并为其分配相关权限。
+    CREATE USER NEW_LYK IDENTIFIED BY 123
     DEFAULT TABLESPACE "USERS"
     TEMPORARY TABLESPACE "TEMP";
     
     -- QUOTAS
-    ALTER USER NEW_LYK_FOUR QUOTA UNLIMITED ON USERS;
-    ALTER USER NEW_LYK_FOUR QUOTA UNLIMITED ON USERS02;
-    ALTER USER NEW_LYK_FOUR ACCOUNT UNLOCK;
+    ALTER USER NEW_LYK QUOTA UNLIMITED ON USERS;
+    ALTER USER NEW_LYK QUOTA UNLIMITED ON USERS02;
+    ALTER USER NEW_LYK ACCOUNT UNLOCK;
     
     -- ROLES
-    GRANT "CONNECT" TO NEW_LYK_FOUR WITH ADMIN OPTION;
-    GRANT "RESOURCE" TO NEW_LYK_FOUR WITH ADMIN OPTION;
-    ALTER USER NEW_LYK_FOUR DEFAULT ROLE "CONNECT","RESOURCE";
+    GRANT "CONNECT" TO NEW_LYK WITH ADMIN OPTION;
+    GRANT "RESOURCE" TO NEW_LYK WITH ADMIN OPTION;
+    ALTER USER NEW_LYK DEFAULT ROLE "CONNECT","RESOURCE";
     
     -- SYSTEM PRIVILEGES
-    GRANT CREATE VIEW TO NEW_LYK_FOUR WITH ADMIN OPTION;
+    GRANT CREATE VIEW TO NEW_LYK WITH ADMIN OPTION;
 
 ##### （1）创建部门表语句及其相关语句（DEPARTMENTS 表空间：USERS）。
     CREATE TABLE DEPARTMENTS
@@ -62,6 +62,8 @@
     BUFFER_POOL DEFAULT
     )
     NOCOMPRESS NO INMEMORY NOPARALLEL;
+    
+    Table DEPARTMENTS 已创建。
 
 ##### （2）创建员工表语句及其相关sql语句（EMPLOYEES 表空间：USERS）。
     CREATE TABLE EMPLOYEES
@@ -129,6 +131,8 @@
     BUFFER_POOL DEFAULT
     )
     );
+    
+    Table EMPLOYEES 已创建。
 
     CREATE INDEX EMPLOYEES_INDEX1_NAME ON EMPLOYEES (NAME ASC)
     NOLOGGING
@@ -144,6 +148,8 @@
     BUFFER_POOL DEFAULT
     )
     NOPARALLEL;
+    
+    Index EMPLOYEES_INDEX1_NAME 已创建。
 
     ALTER TABLE EMPLOYEES
     ADD CONSTRAINT EMPLOYEES_FK1 FOREIGN KEY
@@ -155,6 +161,8 @@
     DEPARTMENT_ID
     )
     ENABLE;
+    
+    Table EMPLOYEES已变更。
 
     ALTER TABLE EMPLOYEES
     ADD CONSTRAINT EMPLOYEES_FK2 FOREIGN KEY
@@ -166,26 +174,36 @@
     EMPLOYEE_ID
     )
     ON DELETE SET NULL ENABLE;
+    
+    Table EMPLOYEES已变更。
 
     ALTER TABLE EMPLOYEES
     ADD CONSTRAINT EMPLOYEES_CHK1 CHECK
     (SALARY>0)
     ENABLE;
+    
+    Table EMPLOYEES已变更。
 
     ALTER TABLE EMPLOYEES
     ADD CONSTRAINT EMPLOYEES_CHK2 CHECK
     (EMPLOYEE_ID<>MANAGER_ID)
     ENABLE;
+    
+    Table EMPLOYEES已变更。
 
     ALTER TABLE EMPLOYEES
     ADD CONSTRAINT EMPLOYEES_EMPLOYEE_MANAGER_ID CHECK
     (MANAGER_ID<>EMPLOYEE_ID)
     ENABLE;
+    
+    Table EMPLOYEES已变更。
 
     ALTER TABLE EMPLOYEES
     ADD CONSTRAINT EMPLOYEES_SALARY CHECK
     (SALARY>0)
     ENABLE;
+    
+    Table EMPLOYEES已变更。
 
 ##### （3）创建订单表语句及其相关sql语句（ORDERS 分区表：USERS,USERS02）。
     --  DDL for Table ORDER_ID_TEMP
@@ -195,6 +213,8 @@
     ) ON COMMIT DELETE ROWS ;
 
     COMMENT ON TABLE "ORDER_ID_TEMP"  IS '用于触发器存储临时ORDER_ID';
+    
+    Comment 已创建。
     
     --  DDL for Table ORDERS
     --------------------------------------------------------
@@ -248,6 +268,8 @@
     )
     NOCOMPRESS NO INMEMORY
     );
+    
+    Table ORDERS 已创建。
 
     --创建本地分区索引ORDERS_INDEX_DATE：
     CREATE INDEX ORDERS_INDEX_DATE ON ORDERS (ORDER_DATE ASC)
@@ -285,6 +307,8 @@
     BUFFER_POOL DEFAULT
     )
     NOPARALLEL;
+    
+    Index ORDERS_INDEX_DATE 已创建。
 
     CREATE INDEX ORDERS_INDEX_CUSTOMER_NAME ON ORDERS (CUSTOMER_NAME ASC)
     NOLOGGING
@@ -300,6 +324,8 @@
     BUFFER_POOL DEFAULT
     )
     NOPARALLEL;
+    
+    Index ORDERS_INDEX_CUSTOMER_NAME 已创建。
 
     CREATE UNIQUE INDEX ORDERS_PK ON ORDERS (ORDER_ID ASC)
     GLOBAL PARTITION BY HASH (ORDER_ID)
@@ -322,6 +348,8 @@
     BUFFER_POOL DEFAULT
     )
     NOPARALLEL;
+    
+    INDEX ORDERS_PK 已创建。
 
     ALTER TABLE ORDERS
     ADD CONSTRAINT ORDERS_PK PRIMARY KEY
@@ -330,6 +358,8 @@
     )
     USING INDEX ORDERS_PK
     ENABLE;
+    
+    Table ORDERS已变更。
 
     ALTER TABLE ORDERS
     ADD CONSTRAINT ORDERS_FK1 FOREIGN KEY
@@ -341,6 +371,8 @@
     EMPLOYEE_ID
     )
     ENABLE;
+    
+    Table ORDERS已变更。
     
 ##### （4）创建产品表语句及其相关sql语句（PRODUCTS 表空间：USERS）。
     CREATE TABLE PRODUCTS
@@ -365,11 +397,15 @@
     MAXEXTENTS 2147483645
     BUFFER_POOL DEFAULT
     );
+    
+    Table PRODUCTS 已创建。
 
     ALTER TABLE PRODUCTS
     ADD CONSTRAINT PRODUCTS_CHK1 CHECK
     (PRODUCT_TYPE IN ('耗材', '手机', '电脑'))
     ENABLE;
+    
+    Table PRODUCTS已变更。
 
 ##### （5）创建订单详表语句及其相关sql语句（ORDER_DETAILS 分区表：USERS,USERS02）。
     CREATE TABLE ORDER_DETAILS
@@ -430,6 +466,8 @@
     NOCOMPRESS NO INMEMORY
     )
     ;
+    
+    Table ORDER_DETAILS 已创建。
 
     CREATE UNIQUE INDEX ORDER_DETAILS_PK ON ORDER_DETAILS (ID ASC)
     NOLOGGING
@@ -445,6 +483,8 @@
     BUFFER_POOL DEFAULT
     )
     NOPARALLEL;
+    
+    INDEX ORDER_DETAILS_PK 已创建。
 
     ALTER TABLE ORDER_DETAILS
     ADD CONSTRAINT ORDER_DETAILS_PK PRIMARY KEY
@@ -453,6 +493,8 @@
     )
     USING INDEX ORDER_DETAILS_PK
     ENABLE;
+    
+    Table ORDER_DETAILS已变更。
 
     --这个索引是必须的，可以使整个订单的详单存放在一起
     CREATE INDEX ORDER_DETAILS_ORDER_ID ON ORDER_DETAILS (ORDER_ID)
@@ -463,11 +505,15 @@
     , PARTITION INDEX_PARTITION2 TABLESPACE USERS02
      NOCOMPRESS
     );
+    
+    Index ORDER_DETAILS_ORDER_ID 已创建。
 
     ALTER TABLE ORDER_DETAILS
     ADD CONSTRAINT ORDER_DETAILS_PRODUCT_NUM CHECK
     (Product_Num>0)
     ENABLE;
+    
+    Table ORDER_DETAILS已变更。
 
 二、第2步：插入相关数据sql语句及其查询相关数据sql语句。 
 ---------
@@ -487,6 +533,8 @@
     d.PRODUCT_PRICE
     FROM ORDERS o,ORDER_DETAILS d,PRODUCTS p where d.ORDER_ID=o.ORDER_ID and d.PRODUCT_NAME=p.PRODUCT_NAME;
      /
+     
+     View "VIEW_ORDER_DETAILS" 已创建。
 
     --插入DEPARTMENTS，EMPLOYEES数据
     INSERT INTO DEPARTMENTS(DEPARTMENT_ID,DEPARTMENT_NAME) values (1,'总经办');
@@ -578,18 +626,30 @@
     --dbms_stats.gather_schema_stats(User,estimate_percent=>100,cascade=> TRUE); --estimate_percent采样行的百分比
     end;
      /
+     
+     PL/SQL 过程已成功完成
 
     ALTER TRIGGER "ORDERS_TRIG_ROW_LEVEL" ENABLE;
+    Trigger "ORDERS_TRIG_ROW_LEVEL"已变更。
+    
      ALTER TRIGGER "ORDER_DETAILS_SNTNS_TRIG" ENABLE;
+     Trigger "ORDER_DETAILS_SNTNS_TRIG"已变更。
+     
      ALTER TRIGGER "ORDER_DETAILS_ROW_TRIG" ENABLE;
+     Trigger "ORDER_DETAILS_ROW_TRIG"已变更。
 
     --最后动态增加一个PARTITION_BEFORE_2018分区：
     ALTER TABLE ORDERS
     ADD PARTITION PARTITION_BEFORE_2018 VALUES LESS THAN (TO_DATE(' 2018-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'));
+    
+    Table ORDERS已变更
+    
 
     ALTER INDEX ORDERS_INDEX_DATE
     MODIFY PARTITION PARTITION_BEFORE_2018
     NOCOMPRESS;
+    
+    Index ORDERS_INDEX_DATE已变更。
     
 ##### （2）序列的应用语句及其相关语句。
     注：插入ORDERS和ORDER_DETAILS 两个表的数据时，主键ORDERS.ORDER_ID, ORDER_DETAILS.ID的值必须通过序列SEQ_ORDER_ID和SEQ_ORDER_ID取得，不能手工输入一个数字。
@@ -601,6 +661,11 @@
     --  DDL for Sequence SEQ_ORDER_DETAILS_ID
     --------------------------------------------------------
     CREATE SEQUENCE  "SEQ_ORDER_DETAILS_ID"  MINVALUE 1 MAXVALUE 9999999999 INCREMENT BY 1 START WITH 1 CACHE 2000 ORDER  NOCYCLE           NOPARTITION ;
+    
+    Sequence "SEQ_ORDER_ID" 已创建。
+
+
+    Sequence "SEQ_ORDER_DETAILS_ID" 已创建。
 
     
 ##### （3）触发器的应用语句及其相关语句。
@@ -627,8 +692,13 @@
     end if;
     END;
     /
+    
+    Trigger ORDERS_TRIG_ROW_LEVEL 已编译
+    
     --批量插入订单数据之前，禁用触发器
     ALTER TRIGGER "ORDERS_TRIG_ROW_LEVEL" DISABLE;
+    
+    Trigger "ORDERS_TRIG_ROW_LEVEL"已变更。
 
 
      --------------------------------------------------------
@@ -656,7 +726,13 @@
      END IF;
     END;
      /
+     
+     Trigger ORDER_DETAILS_ROW_TRIG 已编译
+     
      ALTER TRIGGER "ORDER_DETAILS_ROW_TRIG" DISABLE;
+     
+     Trigger "ORDER_DETAILS_ROW_TRIG"已变更。
+     
      --------------------------------------------------------
     --  DDL for Trigger ORDER_DETAILS_SNTNS_TRIG
     --------------------------------------------------------
@@ -679,14 +755,19 @@
      END LOOP;
      --delete from ORDER_ID_TEMP; --这句话很重要，否则可能一直不释放空间，后继插入会非常慢。
     END;
+    
+    Trigger ORDER_DETAILS_SNTNS_TRIG 已编译
+    
     /
     ALTER TRIGGER "ORDER_DETAILS_SNTNS_TRIG" DISABLE;
-
+    
+    Trigger "ORDER_DETAILS_SNTNS_TRIG"已变更。
     
 ##### （4）查询数据语句。
 
 ###### 1.查询某个员工的信息sql语句。
-     SELECT * FROM EMPLOYEE WHERE employee_ID = 11;
+     SELECT * FROM EMPLOYEES WHERE employee_ID = 11;
+    ![image](https://github.com/201610414314/Oracle/blob/master/test4/1.png)  
 ###### 2.递归查询某个员工及其所有下属，子下属员工SQL语句。
      WITH A (EMPLOYEE_ID,NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,SALARY,MANAGER_ID,DEPARTMENT_ID) AS
      (SELECT EMPLOYEE_ID,NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,SALARY,MANAGER_ID,DEPARTMENT_ID
