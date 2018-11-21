@@ -3,12 +3,17 @@
                             ———— 2018年11月21日 16软3刘宇坤/201610414314
 实验前提
 -------
--假设有一个生产某个产品的单位，单位接受网上订单进行产品的销售。通过实验模拟这个单位的部分信息：员工表，部门表，订单表，订单详单表。
--本实验以实验四为基础
+- 假设有一个生产某个产品的单位，单位接受网上订单进行产品的销售。通过实验模拟这个单位的部分信息：员工表，部门表，订单表，订单详单表。
+- 本实验以实验四为基础。
 
-一、第1步：创建一个包(Package)，包名是MyPack：
+一、第1步：创建一个包(Package)，包名是MyPack，并定义相关包头，实验SQL语句及结果如下：
 -------
-
+    create or replace PACKAGE MyPack IS
+      FUNCTION Get_SaleAmount(V_DEPARTMENT_ID NUMBER) RETURN NUMBER;
+      PROCEDURE Get_Employees(V_EMPLOYEE_ID NUMBER);
+    END MyPack;
+    
+    Package MYPACK 已编译
 
 二、第2步：在MyPack中创建一个函数SaleAmount ，查询部门表，统计每个部门的销售总金额，每个部门的销售额是由该部门的员工(ORDERS.EMPLOYEE_ID)完成的销额之和。函数SaleAmount要求输入的参数是部门号，输出部门的销售金额。
 ---------
