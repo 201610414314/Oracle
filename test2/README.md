@@ -93,15 +93,10 @@ Copyright (c) 1982, 2014, Oracle.  All rights reserved.
 Oracle Database 12c Enterprise Edition Release 12.1.0.2.0 - 64bit Production
 With the Partitioning, OLAP, Advanced Analytics and Real Application Testing options  
 SQL> SELECT tablespace_name,FILE_NAME,BYTES/1024/1024 MB,MAXBYTES/1024/1024 MAX_MB,autoextensible FROM dba_data_files  WHERE  tablespace_name='USERS';  
-TABLESPACE_NAME
 
-FILE_NAME
-
-        MB     MAX_MB AUTOEXTEN
----------- ---------- ---------
-USERS
-/home/oracle/app/oracle/oradata/orcl/pdborcl/SAMPLE_SCHEMA_users01.dbf
-         5 32767.9844 YES
+    TABLESPACE_NAME    FILE_NAME       MB     MAX_MB AUTOEXTEN
+    ---------- ---------- ---------
+    USERS /home/oracle/app/oracle/oradata/orcl/pdborcl/SAMPLE_SCHEMA_users01.dbf 5 32767.9844 YES
 
 
 SELECT from (SELECT tablespace_name,Sum(bytes)free
@@ -114,26 +109,21 @@ SELECT a.tablespace_name "表空间名",Total/1024/1024 "大小MB",
         group  BY tablespace_name)b
   8   where  a.tablespace_name = b.tablespace_name;
 
-表空间名
----------- ----------------------------------- ---------------------------------
-    大小MB     剩余MB     使用MB    使用率%
----------- ---------- ---------- ----------
-SYSAUX
-       630         39        591      93.81
+     ---------- ----------------------------------- ---------------------------------
+     表空间名   大小MB     剩余MB     使用MB    使用率%
+     ---------- ---------- ---------- ----------
+     SYSAUX  630         39        591      93.81
 
-USERS
-         5        1.5        3.5         70
+     USERS   5        1.5        3.5         70
 
-SYSTEM
-       270     3.5625   266.4375      98.68
+    SYSTEM   270     3.5625   266.4375      98.68
 
 
-表空间名
----------- -------------------------------- ------------------------------------
-    大小MB     剩余MB     使用MB    使用率%
----------- ---------- ---------- ----------
-EXAMPLE
-  1281.875      62.25   1219.625      95.14  
+     表空间名
+     ---------- -------------------------------- ------------------------------------
+     表空间名   大小MB     剩余MB     使用MB    使用率%
+     ---------- ---------- ---------- ----------
+     EXAMPLE   1281.875      62.25   1219.625      95.14  
   
   
 总结分析:
